@@ -1,0 +1,14 @@
+[
+    {"ru_trans" : "белый", "en_trans" : "white", "word_group": "цвет"},
+    {"ru_trans" : "синий", "en_trans" : "blue", "word_group": "цвет"},
+    {"ru_trans" : "красный", "en_trans" : "red", "word_group": "цвет"},
+    {"ru_trans" : "зеленый", "en_trans" : "green", "word_group": "цвет"},
+    {"ru_trans" : "я", "en_trans" : "I", "word_group": "местоимение"},
+    {"ru_trans" : "он", "en_trans" : "he", "word_group": "местоимение"},
+    {"ru_trans" : "она", "en_trans" : "she", "word_group": "местоимение"},
+    {"ru_trans" : "они", "en_trans" : "they", "word_group": "местоимение"},
+    {"ru_trans" : "кошка", "en_trans" : "cat", "word_group": "животное"},
+    {"ru_trans" : "собака", "en_trans" : "dog", "word_group": "животное"},
+    {"ru_trans" : "мышь", "en_trans" : "mouse", "word_group": "животное"},
+    {"ru_trans" : "питон", "en_trans" : "python", "word_group": "животное"}
+    ]
