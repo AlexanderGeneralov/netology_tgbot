@@ -5,7 +5,7 @@ from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 Base = declarative_base()
 
 db = 'postgres'
-db_password = 'dacent0000'  # delete password
+db_password = ''  # delete password
 host_type = 'localhost'
 host = '5432'
 db_name = 'postgres'

@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 
 
 db = 'postgres'
-db_password = 'dacent0000'  # delete password
+db_password = ''  # delete password
 host_type = 'localhost'
 host = '5432'
 db_name = 'postgres'
@@ -31,7 +31,7 @@ def get_user_list_of_words(q_user_serial):
     return [x[0] for x in list_of_words]
 
 
-# function cehcks if word in personnel list of words (word_user table) and add new word or print exception
+# function checks if word is in personnel list of words (word_user table) and add new word or print exception
 def add_word(q_word, q_user_serial):
 
     if q_word in get_user_list_of_words(q_user_serial):
@@ -100,6 +100,18 @@ def get_words_number_in_word_user(q_user_serial):
 def get_word_group():
     group = session.query(Word.word_group).group_by(Word.word_group)
     return [x[0] for x in group]
+
+
+def get_word_definition(q_word):
+    pass
+
+
+def daily_reminder():
+    pass
+
+
+def greeting():
+    pass
 
 
 if __name__ == "__main__":
