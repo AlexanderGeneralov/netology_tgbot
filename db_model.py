@@ -1,11 +1,11 @@
 import sqlalchemy as sq
 import json
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
+from config import db_password
 
 Base = declarative_base()
 
 db = 'postgres'
-db_password = ''  # delete password
 host_type = 'localhost'
 host = '5432'
 db_name = 'postgres'

@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 
 
 db = 'postgres'
-db_password = ''  # delete password
+db_password = 'dacent0000'  # delete password
 host_type = 'localhost'
 host = '5432'
 db_name = 'postgres'
@@ -17,9 +17,20 @@ session = Session()
 
 
 # function adds user by user TG account id to user table
-def add_user(q_user_serial):
-    session.add(User(user_serial=q_user_serial))
-    session.commit()
+def add_user(q_user_serial, session):
+    if q_user_serial not in get_list_of_users(session):
+        session.add(User(user_serial=q_user_serial))
+        session.commit()
+        print(f"User with ID: {q_user_serial} had been added.")
+    else:
+        pass
+
+
+# function to get list of user from db
+def get_list_of_users(session):
+    lst = session.query(User.user_serial).all()
+    return [item[0] for item in lst]
+
 
 
 # function returns list of words added for specified user
@@ -28,7 +39,7 @@ def get_user_list_of_words(q_user_serial):
         .join(WordUser, Word.id == WordUser.word_id) \
         .join(User, User.id == WordUser.user_id) \
         .filter(User.user_serial == q_user_serial).all()
-    return [x[0] for x in list_of_words]
+    return [item[0] for item in list_of_words]
 
 
 # function checks if word is in personnel list of words (word_user table) and add new word or print exception
@@ -96,10 +107,10 @@ def get_words_number_in_word_user(q_user_serial):
     return number
 
 
-# function returns list of available groups of words
-def get_word_group():
-    group = session.query(Word.word_group).group_by(Word.word_group)
-    return [x[0] for x in group]
+# function returns list of available categories of words
+def get_word_category(session):
+    category = session.query(Word.word_group).group_by(Word.word_group)
+    return [item[0] for item in category]
 
 
 def get_word_definition(q_word):
@@ -116,7 +127,7 @@ def greeting():
 
 if __name__ == "__main__":
 
-    #add_user('123')
+    add_user('6323533861', session)
     #add_word("питон", '123')
     #delete_word("питон", '123')
     #get_word_user_id('белый', '123')
@@ -126,3 +137,4 @@ if __name__ == "__main__":
     #get_word_user_counter('питон', '123')
     #get_user_list_of_words('123')
     #get_word_group()
+    #get_list_of_users(session)
