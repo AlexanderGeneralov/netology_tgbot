@@ -2,10 +2,9 @@ import sqlalchemy as sq
 from sqlalchemy import func
 from db_model import Word, User, WordUser
 from sqlalchemy.orm import sessionmaker
-
+from config import db_password
 
 db = 'postgres'
-db_password = 'dacent0000'  # delete password
 host_type = 'localhost'
 host = '5432'
 db_name = 'postgres'
@@ -42,11 +41,18 @@ def get_user_list_of_words(q_user_serial):
     return [item[0] for item in list_of_words]
 
 
+# function to return list of words for chosen category
+def get_word_by_category(category, session):
+    list_of_words = session.query(Word.ru_trans, Word.en_trans).filter(Word.word_group == category).all()
+    return list_of_words
+
+
 # function checks if word is in personnel list of words (word_user table) and add new word or print exception
 def add_word(q_word, q_user_serial):
 
     if q_word in get_user_list_of_words(q_user_serial):
         print(f"Word '{q_word}' was already added")
+        pass
     else:
         q_word_id = session.query(Word.id).filter(Word.ru_trans == q_word).scalar()
         q_user_id = session.query(User.id).filter(User.user_serial == q_user_serial).scalar()
@@ -126,9 +132,10 @@ def greeting():
 
 
 if __name__ == "__main__":
+    pass
 
-    add_user('6323533861', session)
-    #add_word("питон", '123')
+    #add_user('6323533861', session)
+    #add_word("белый", '6323533861')
     #delete_word("питон", '123')
     #get_word_user_id('белый', '123')
     #increment_word_counter('питон', '123')
@@ -138,3 +145,4 @@ if __name__ == "__main__":
     #get_user_list_of_words('123')
     #get_word_group()
     #get_list_of_users(session)
+    #get_word_by_category(session, "животное")
