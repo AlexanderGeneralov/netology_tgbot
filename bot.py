@@ -1,11 +1,11 @@
 import random
+import time
+import schedule
 import db_query
-from telebot import types, TeleBot, custom_filters
+from telebot import types, TeleBot
 from telebot.storage import StateMemoryStorage
 from telebot.handler_backends import State, StatesGroup
 import sqlalchemy as sq
-from sqlalchemy import func
-from db_model import Word, User, WordUser
 from sqlalchemy.orm import sessionmaker
 from config import TOKEN, db_password
 
@@ -64,22 +64,24 @@ def set_category(message):
     bot.set_state(message.from_user.id, MyStates.word_category, message.chat.id)
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         data["word_category"] = word_category
-    print(f"Сообщение из фнкции set_category: {word_category}")
+    #print(f"Сообщение из фнкции set_category: {word_category}")
     create_card(message)
 
 
 def create_card(message):
+    # extract data of category out of state machine
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         word_category = data["word_category"]
 
-    print(f"сообщение из функции create_card: {word_category}")
-
-    pairs = db_query.get_word_by_category(word_category, session=session)  # create list of ru - en word pairs by category
+    #print(f"сообщение из функции create_card: {word_category}")
+    # create list of ru - en word pairs by category
+    pairs = db_query.get_word_by_category(word_category, session=session)
     random.shuffle(pairs)
-    target_word = pairs[0][0]
-    translate_word = pairs[0][1]
-    another_words = [word[1] for word in pairs[1:]]
-
+    pairs = pairs[:5]  # take first 4 pairs of words
+    target_word = pairs[0][0]  # ru word
+    translate_word = pairs[0][1]  # en word
+    another_words = [word[1] for word in pairs[1:]]  # another en words
+    # create keyboard
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     btn_translate_word = types.KeyboardButton(translate_word)
     btn_another_words = [types.KeyboardButton(word) for word in another_words]
@@ -90,11 +92,9 @@ def create_card(message):
     btns = [btn_translate_word] + btn_another_words
     random.shuffle(btns)
     btns += [btn_next_word, btn_choose_category, btn_add_word, btn_delete_word]
-
     markup.add(*btns)
-
     bot.send_message(message.chat.id, f"Угадай перевод слова '{target_word}'", reply_markup=markup)
-
+    # save data of words to state machine
     bot.set_state(message.from_user.id, MyStates.target_word, message.chat.id)
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         data['target_word'] = target_word
@@ -104,23 +104,46 @@ def create_card(message):
 
 @bot.message_handler(func=lambda message: True, content_types=["text"])
 def card_message_reply(message):
-    print(f"сообщение из функции card_message_reply: {message.text}")
+    #print(f"Сообщение из функции card_message_reply: {message.text}")
+    # extract data of word out of state machine
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         target_word = data['translate_word']
+
+    word = data['target_word'] # use this word for add, delete functions
+    user_id = str(message.from_user.id)
+    chat_id = message.chat.id
+
     if message.text == target_word:
-        bot.send_message(message.chat.id, "Все правильно!")
+        bot.send_message(chat_id, "Все правильно!")
         create_card(message)
     elif message.text == "Выбрать категорию":
         choose_category(message)
     elif message.text == "Дальше ⏭":
         create_card(message)
     elif message.text == "Добавить слово ➕":
-        user_id = str(message.from_user.id)
-        print(user_id, data['target_word'])
-        db_query.add_word(data['target_word'], user_id)
-        bot.send_message(message.chat.id, f"Слово '{target_word}' добавлено в ваш личный список слов")
+        add_word_to_personnel_list(chat_id, user_id, word)
+    elif message.text == "Удалить слово🔙":
+        delete_word_out_of_personnel_list(chat_id, user_id, word)
     else:
-        bot.send_message(message.chat.id, "Ошибка!")
+        bot.send_message(chat_id, "Ошибка!")
+
+
+def add_word_to_personnel_list(chat_id, user_id, word):
+    if word in db_query.get_user_list_of_words(user_id, session=session):
+        bot.send_message(chat_id, f"Слово '{word}' уже в вашем личном списке слов.")
+    else:
+        db_query.add_word(word, user_id, session=session)
+        word_count = db_query.get_words_number_in_word_user(user_id, session=session)
+        bot.send_message(chat_id, f"Слово '{word}' добавлено в ваш личный список слов.")
+        bot.send_message(chat_id, f"В вашем списке {word_count} слов.")
+
+
+def delete_word_out_of_personnel_list(chat_id, user_id, word):
+    if word not in db_query.get_user_list_of_words(user_id, session=session):
+        bot.send_message(chat_id, f"Слова '{word}' нет в вашем личном списке слов.")
+    else:
+        db_query.delete_word(word, user_id, session=session)
+        bot.send_message(chat_id, f"Слово '{word}' удалено из вашего личного списка слов.")
 
 
 bot.infinity_polling(skip_pending=True)

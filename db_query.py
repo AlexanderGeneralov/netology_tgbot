@@ -33,7 +33,7 @@ def get_list_of_users(session):
 
 
 # function returns list of words added for specified user
-def get_user_list_of_words(q_user_serial):
+def get_user_list_of_words(q_user_serial, session):
     list_of_words = session.query(Word.ru_trans) \
         .join(WordUser, Word.id == WordUser.word_id) \
         .join(User, User.id == WordUser.user_id) \
@@ -48,9 +48,9 @@ def get_word_by_category(category, session):
 
 
 # function checks if word is in personnel list of words (word_user table) and add new word or print exception
-def add_word(q_word, q_user_serial):
+def add_word(q_word, q_user_serial, session):
 
-    if q_word in get_user_list_of_words(q_user_serial):
+    if q_word in get_user_list_of_words(q_user_serial, session):
         print(f"Word '{q_word}' was already added")
         pass
     else:
@@ -66,7 +66,7 @@ def add_word(q_word, q_user_serial):
 
 
 # function returns id of a row for specified word for specified user
-def get_word_user_id(q_word, q_user_serial):
+def get_word_user_id(q_word, q_user_serial, session):
     word_user_id = session.query(WordUser.id) \
         .select_from(WordUser) \
         .join(User, User.id == WordUser.user_id) \
@@ -76,37 +76,37 @@ def get_word_user_id(q_word, q_user_serial):
 
 
 # function returns counter of correct/wrong answers for specified word for specified user
-def get_word_user_counter(q_word, q_user_serial):
-    word_user_id = get_word_user_id(q_word, q_user_serial)
+def get_word_user_counter(q_word, q_user_serial, session):
+    word_user_id = get_word_user_id(q_word, q_user_serial, session)
     counter = session.query(WordUser.word_counter).filter(WordUser.id == word_user_id).scalar()
     return counter
 
 
 # function to delete specified word for specified user out of personnel list of words (user_word table)
-def delete_word(q_word, q_user_serial):
-    word_user_id = get_word_user_id(q_word, q_user_serial)
+def delete_word(q_word, q_user_serial, session):
+    word_user_id = get_word_user_id(q_word, q_user_serial, session)
     session.query(WordUser).filter(WordUser.id == word_user_id).delete()
     session.commit()
 
 
 # function to increment word counter for specified word for specified user (user_word table)
-def increment_word_counter(q_word, q_user_serial):
-    word_user_id = get_word_user_id(q_word, q_user_serial)
-    counter = get_word_user_counter(q_word, q_user_serial)
+def increment_word_counter(q_word, q_user_serial, session):
+    word_user_id = get_word_user_id(q_word, q_user_serial, session)
+    counter = get_word_user_counter(q_word, q_user_serial, session)
     session.query(WordUser).filter(WordUser.id == word_user_id).update({'word_counter': counter + 1})
     session.commit()
 
 
 # function to increment word counter for specified word for specified user (user_word table)
-def decrement_word_counter(q_word, q_user_serial):
-    word_user_id = get_word_user_id(q_word, q_user_serial)
-    counter = get_word_user_counter(q_word, q_user_serial)
+def decrement_word_counter(q_word, q_user_serial, session):
+    word_user_id = get_word_user_id(q_word, q_user_serial, session)
+    counter = get_word_user_counter(q_word, q_user_serial, session)
     session.query(WordUser).filter(WordUser.id == word_user_id).update({'word_counter': counter - 1})
     session.commit()
 
 
 # function to count words number in personal list of words (user_word table)
-def get_words_number_in_word_user(q_user_serial):
+def get_words_number_in_word_user(q_user_serial, session):
     number = session.query(func.count(WordUser.id)). \
         join(User, WordUser.user_id == User.id). \
         filter(User.user_serial == q_user_serial).scalar()
@@ -119,7 +119,7 @@ def get_word_category(session):
     return [item[0] for item in category]
 
 
-def get_word_definition(q_word):
+def get_word_definition():
     pass
 
 

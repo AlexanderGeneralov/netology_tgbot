@@ -3,12 +3,20 @@
     {"ru_trans" : "синий", "en_trans" : "blue", "word_group": "цвет"},
     {"ru_trans" : "красный", "en_trans" : "red", "word_group": "цвет"},
     {"ru_trans" : "зеленый", "en_trans" : "green", "word_group": "цвет"},
+    {"ru_trans" : "коричневый", "en_trans" : "brown", "word_group": "цвет"},
+    {"ru_trans" : "черный", "en_trans" : "black", "word_group": "цвет"},
     {"ru_trans" : "я", "en_trans" : "I", "word_group": "местоимение"},
     {"ru_trans" : "он", "en_trans" : "he", "word_group": "местоимение"},
     {"ru_trans" : "она", "en_trans" : "she", "word_group": "местоимение"},
     {"ru_trans" : "они", "en_trans" : "they", "word_group": "местоимение"},
+    {"ru_trans" : "ты", "en_trans" : "you", "word_group": "местоимение"},
+    {"ru_trans" : "вы", "en_trans" : "your", "word_group": "местоимение"},
+    {"ru_trans" : "это", "en_trans" : "it", "word_group": "местоимение"},
+    {"ru_trans" : "тот", "en_trans" : "that", "word_group": "местоимение"},
     {"ru_trans" : "кошка", "en_trans" : "cat", "word_group": "животное"},
     {"ru_trans" : "собака", "en_trans" : "dog", "word_group": "животное"},
     {"ru_trans" : "мышь", "en_trans" : "mouse", "word_group": "животное"},
-    {"ru_trans" : "питон", "en_trans" : "python", "word_group": "животное"}
-    ]
+    {"ru_trans" : "питон", "en_trans" : "python", "word_group": "животное"},
+    {"ru_trans" : "птица", "en_trans" : "bird", "word_group": "животное"},
+    {"ru_trans" : "змея", "en_trans" : "snake", "word_group": "животное"}
+]
