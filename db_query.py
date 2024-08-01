@@ -1,18 +1,5 @@
-import sqlalchemy as sq
 from sqlalchemy import func
 from db_model import Word, User, WordUser
-from sqlalchemy.orm import sessionmaker
-from config import db_password
-
-db = 'postgres'
-host_type = 'localhost'
-host = '5432'
-db_name = 'postgres'
-
-DSN = f"postgresql://{db}:{db_password}@{host_type}:{host}/{db_name}"
-engine = sq.create_engine(DSN)
-Session = sessionmaker(bind=engine)
-session = Session()
 
 
 # function adds user by user TG account id to user table
@@ -29,7 +16,6 @@ def add_user(q_user_serial, session):
 def get_list_of_users(session):
     lst = session.query(User.user_serial).all()
     return [item[0] for item in lst]
-
 
 
 # function returns list of words added for specified user
@@ -129,20 +115,3 @@ def daily_reminder():
 
 def greeting():
     pass
-
-
-if __name__ == "__main__":
-    pass
-
-    #add_user('6323533861', session)
-    #add_word("белый", '6323533861')
-    #delete_word("питон", '123')
-    #get_word_user_id('белый', '123')
-    #increment_word_counter('питон', '123')
-    #decrement_word_counter('питон', '123')
-    #get_words_number_in_word_user('123')
-    #get_word_user_counter('питон', '123')
-    #get_user_list_of_words('123')
-    #get_word_group()
-    #get_list_of_users(session)
-    #get_word_by_category(session, "животное")

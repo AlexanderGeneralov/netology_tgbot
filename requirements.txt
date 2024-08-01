@@ -1,0 +1,14 @@
+certifi==2024.2.2
+charset-normalizer==3.3.2
+colorama==0.4.6
+greenlet==3.0.3
+idna==3.7
+psycopg2-binary==2.9.9
+pyTelegramBotAPI==4.21.0
+requests==2.31.0
+schedule==1.2.2
+SQLAlchemy==2.0.31
+telebot==0.0.5
+tqdm==4.66.4
+typing_extensions==4.12.2
+urllib3==2.2.1
