@@ -27,6 +27,15 @@ def get_user_list_of_words(q_user_serial, session):
     return [item[0] for item in list_of_words]
 
 
+# function checks if specified word is in user list, returns empty list or list with id
+def check_if_word_in_user_list(q_user_serial, word, session):
+    res = session.query(WordUser.id) \
+        .join(Word, Word.id == WordUser.word_id) \
+        .join(User, User.id == WordUser.user_id) \
+        .filter(User.user_serial == q_user_serial, Word.ru_trans == word).all()
+    return res
+
+
 # function to return list of words for chosen category
 def get_word_by_category(category, session):
     list_of_words = session.query(Word.ru_trans, Word.en_trans).filter(Word.word_group == category).all()
@@ -42,11 +51,10 @@ def add_word(q_word, q_user_serial, session):
     else:
         q_word_id = session.query(Word.id).filter(Word.ru_trans == q_word).scalar()
         q_user_id = session.query(User.id).filter(User.user_serial == q_user_serial).scalar()
-        q_word_counter = 0
         session.add(WordUser(
             word_id=q_word_id,
             user_id=q_user_id,
-            word_counter=q_word_counter)
+            )
         )
         session.commit()
 
@@ -76,6 +84,7 @@ def delete_word(q_word, q_user_serial, session):
 
 
 # function to increment word counter for specified word for specified user (user_word table)
+# function is not used
 def increment_word_counter(q_word, q_user_serial, session):
     word_user_id = get_word_user_id(q_word, q_user_serial, session)
     counter = get_word_user_counter(q_word, q_user_serial, session)
@@ -84,6 +93,7 @@ def increment_word_counter(q_word, q_user_serial, session):
 
 
 # function to increment word counter for specified word for specified user (user_word table)
+# function is not used
 def decrement_word_counter(q_word, q_user_serial, session):
     word_user_id = get_word_user_id(q_word, q_user_serial, session)
     counter = get_word_user_counter(q_word, q_user_serial, session)
@@ -103,15 +113,3 @@ def get_words_number_in_word_user(q_user_serial, session):
 def get_word_category(session):
     category = session.query(Word.word_group).group_by(Word.word_group)
     return [item[0] for item in category]
-
-
-def get_word_definition():
-    pass
-
-
-def daily_reminder():
-    pass
-
-
-def greeting():
-    pass

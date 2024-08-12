@@ -24,6 +24,7 @@ state_storage = StateMemoryStorage()
 
 bot = TeleBot(TOKEN, state_storage=state_storage)
 
+
 # class to create commands for keyboard
 class Command:
     ADD_WORD = 'Добавить слово ➕'
@@ -133,7 +134,7 @@ def card_message_reply(message):
 
 # function to add word to personnel list of words
 def add_word_to_personnel_list(chat_id, user_id, word):
-    if word in db_query.get_user_list_of_words(user_id, session=session):
+    if db_query.check_if_word_in_user_list(user_id, word, session=session):
         bot.send_message(chat_id, f"Слово '{word}' уже в вашем личном списке слов.")
     else:
         db_query.add_word(word, user_id, session=session)
@@ -144,7 +145,7 @@ def add_word_to_personnel_list(chat_id, user_id, word):
 
 # function to delete word out of personnel list of words
 def delete_word_out_of_personnel_list(chat_id, user_id, word):
-    if word not in db_query.get_user_list_of_words(user_id, session=session):
+    if not db_query.check_if_word_in_user_list(user_id, word, session=session):
         bot.send_message(chat_id, f"Слова '{word}' нет в вашем личном списке слов.")
     else:
         db_query.delete_word(word, user_id, session=session)

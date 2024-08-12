@@ -42,7 +42,6 @@ class WordUser(Base):
     id = sq.Column(sq.Integer, primary_key=True)
     word_id = sq.Column(sq.Integer, sq.ForeignKey("word.id"), nullable=False)
     user_id = sq.Column(sq.Integer, sq.ForeignKey("user.id"), nullable=False)
-    word_counter = sq.Column(sq.Integer, nullable=False)
 
     word = relationship(Word, back_populates='words_users')
     user = relationship(User, back_populates='words_users')
